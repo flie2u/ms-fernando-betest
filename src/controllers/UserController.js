@@ -11,7 +11,7 @@ const createUser = async (req, res) => {
         await user.save();
         res.status(201).json({ message: 'User created successfully', user });
 
-        await redisClient.del('users');
+        await redisClient.del('redis_fernando_betest:users');
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -19,7 +19,7 @@ const createUser = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
     try {
-        const cacheKey = 'users';
+        const cacheKey = 'redis_fernando_betest:users';
         const cachedUsers = await redisClient.get(cacheKey);
         
         if (cachedUsers) {
@@ -36,7 +36,7 @@ const getAllUsers = async (req, res) => {
 
 const getUserById = async (req, res) => {
     try {
-        const cacheKey = `user:${req.params.id}`;
+        const cacheKey = `redis_fernando_betest:user:${req.params.id}`;
         const cachedUser = await redisClient.get(cacheKey);
         
         if (cachedUser) {
@@ -56,7 +56,7 @@ const getUserById = async (req, res) => {
 
 const getUserByAccountNumber = async (req, res) => {
     try {
-        const cacheKey = `user:account:${req.params.accountNumber}`;
+        const cacheKey = `redis_fernando_betest:user:account:${req.params.accountNumber}`;
         const cachedUser = await redisClient.get(cacheKey);
         
         if (cachedUser) {
@@ -76,7 +76,7 @@ const getUserByAccountNumber = async (req, res) => {
 
 const getUserByIdentityNumber = async (req, res) => {
     try {
-        const cacheKey = `user:identity:${req.params.identityNumber}`;
+        const cacheKey = `redis_fernando_betest:user:identity:${req.params.identityNumber}`;
         const cachedUser = await redisClient.get(cacheKey);
         
         if (cachedUser) {
@@ -101,9 +101,9 @@ const updateUser = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        await redisClient.del(`user:${req.params.id}`);
-        await redisClient.del(`user:account:${user.accountNumber}`);
-        await redisClient.del(`user:identity:${user.identityNumber}`);
+        await redisClient.del(`redis_fernando_betest:user:${req.params.id}`);
+        await redisClient.del(`redis_fernando_betest:user:account:${user.accountNumber}`);
+        await redisClient.del(`redis_fernando_betest:user:identity:${user.identityNumber}`);
 
         res.status(200).json({ message: 'User updated', user });
     } catch (error) {
@@ -118,9 +118,9 @@ const deleteUser = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        await redisClient.del(`user:${req.params.id}`);
-        await redisClient.del(`user:account:${user.accountNumber}`);
-        await redisClient.del(`user:identity:${user.identityNumber}`);
+        await redisClient.del(`redis_fernando_betest:user:${req.params.id}`);
+        await redisClient.del(`redis_fernando_betest:user:account:${user.accountNumber}`);
+        await redisClient.del(`redis_fernando_betest:user:identity:${user.identityNumber}`);
 
         res.status(204).json({ message: 'User deleted' });
     } catch (error) {
